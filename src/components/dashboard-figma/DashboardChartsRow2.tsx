@@ -40,18 +40,6 @@ function Legend({ items }: { items: { name: string; color: string }[] }) {
   )
 }
 
-function YLabels({ yMax, ticks }: { yMax: number; ticks: number }) {
-  const step = yMax / (ticks - 1)
-  const labels = Array.from({ length: ticks }, (_, i) => Math.round(yMax - i * step))
-  return (
-    <div className="flex h-full w-10 shrink-0 flex-col justify-between pb-4 pt-2">
-      {labels.map((n) => (
-        <p key={n} className="text-right text-[10px] leading-none text-[#717680]">{n}</p>
-      ))}
-    </div>
-  )
-}
-
 function buildSmoothPath(
   values: number[],
   yMax: number,
@@ -96,19 +84,25 @@ function LineChartSvg({
   const pathBRef = useRef<SVGPathElement>(null)
   const [hover, setHover] = useState<{ series: 'a' | 'b'; idx: number } | null>(null)
 
-  const vbW = 300, vbH = 150
-  const padX = 12, padY = 10, padB = 18
-  const innerW = vbW - padX * 2
+  /** Wider viewBox: left gutter for Y ticks (same y as grid, avoids flex mis-alignment). */
+  const vbW = 320
+  const vbH = 150
+  const padLeft = 34
+  const padRight = 12
+  const padY = 12
+  const padB = 16
+  const innerW = vbW - padLeft - padRight
   const innerH = vbH - padY - padB
 
-  const pathA = buildSmoothPath(seriesA, yMax, padX, padY, innerW, innerH)
-  const pathB = buildSmoothPath(seriesB, yMax, padX, padY, innerW, innerH)
+  const pathA = buildSmoothPath(seriesA, yMax, padLeft, padY, innerW, innerH)
+  const pathB = buildSmoothPath(seriesB, yMax, padLeft, padY, innerW, innerH)
 
   const gridLines = 5
   const gridYs = Array.from({ length: gridLines + 1 }, (_, i) => padY + (i / gridLines) * innerH)
+  const yTickValues = gridYs.map((_, i) => Math.round(yMax - (i / gridLines) * yMax))
 
   const getPoint = (vals: number[], idx: number) => ({
-    x: padX + (idx / (vals.length - 1)) * innerW,
+    x: padLeft + (idx / (vals.length - 1)) * innerW,
     y: padY + innerH - (vals[idx] / yMax) * innerH,
   })
 
@@ -144,28 +138,48 @@ function LineChartSvg({
       <svg
         ref={svgRef}
         viewBox={`0 0 ${vbW} ${vbH}`}
-        className="h-full w-full"
+        className="h-full w-full text-xs"
         preserveAspectRatio="xMidYMid meet"
         onMouseLeave={() => setHover(null)}
       >
         {gridYs.map((gy, i) => (
           <line
             key={i}
-            x1={padX} y1={gy} x2={vbW - padX} y2={gy}
-            stroke="#e9eaeb" strokeWidth={0.5}
+            x1={padLeft}
+            y1={gy}
+            x2={vbW - padRight}
+            y2={gy}
+            stroke="#e9eaeb"
+            strokeWidth={0.5}
             strokeDasharray="3 3"
             vectorEffect="non-scaling-stroke"
           />
         ))}
 
+        {yTickValues.map((val, i) => (
+          <text
+            key={`y-${i}-${val}`}
+            x={padLeft - 6}
+            y={gridYs[i]!}
+            textAnchor="end"
+            dominantBaseline="central"
+            className="fill-[#717680]"
+            style={{ fontSize: 8 }}
+          >
+            {val}
+          </text>
+        ))}
+
         {/* area fills */}
         <path
-          d={pathA + ` L ${padX + innerW} ${padY + innerH} L ${padX} ${padY + innerH} Z`}
-          fill={colorA} opacity={0.06}
+          d={pathA + ` L ${padLeft + innerW} ${padY + innerH} L ${padLeft} ${padY + innerH} Z`}
+          fill={colorA}
+          opacity={0.06}
         />
         <path
-          d={pathB + ` L ${padX + innerW} ${padY + innerH} L ${padX} ${padY + innerH} Z`}
-          fill={colorB} opacity={0.06}
+          d={pathB + ` L ${padLeft + innerW} ${padY + innerH} L ${padLeft} ${padY + innerH} Z`}
+          fill={colorB}
+          opacity={0.06}
         />
 
         <path
@@ -244,7 +258,7 @@ function LineChartSvg({
         {xLabels.map((t, i) => (
           <text
             key={t}
-            x={padX + (i / (xLabels.length - 1)) * innerW}
+            x={padLeft + (i / (xLabels.length - 1)) * innerW}
             y={vbH - 4}
             textAnchor="middle"
             className="fill-[#535862] text-[7px]"
@@ -293,18 +307,15 @@ function LineChartCard({
           { name: 'Blocks', color: colorBlocks },
           { name: 'Warnings', color: colorWarnings },
         ]} />
-        <div className="flex flex-1 items-end gap-0">
-          <YLabels yMax={yMax} ticks={6} />
-          <div className="relative min-h-[180px] flex-1 py-1 pr-2">
-            <LineChartSvg
-              yMax={yMax}
-              seriesA={blocks}
-              seriesB={warnings}
-              colorA={colorBlocks}
-              colorB={colorWarnings}
-              xLabels={xLabels}
-            />
-          </div>
+        <div className="relative flex-1 min-h-[180px] py-1 pr-2 pl-0.5">
+          <LineChartSvg
+            yMax={yMax}
+            seriesA={blocks}
+            seriesB={warnings}
+            colorA={colorBlocks}
+            colorB={colorWarnings}
+            xLabels={xLabels}
+          />
         </div>
       </div>
     </div>

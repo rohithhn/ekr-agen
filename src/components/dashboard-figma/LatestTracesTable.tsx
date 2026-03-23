@@ -253,7 +253,7 @@ export function LatestTracesTable({ onOpenTrace }: { onOpenTrace: (trace: TraceR
                 tabIndex={0}
                 aria-label={`Open trace details for ${row.name}`}
                 onClick={() => onOpenTrace(row)}
-                className={`relative ${ROW_Z[i]} flex h-[72px] w-full shrink-0 cursor-pointer content-stretch items-center gap-[var(--spacing-lg,12px)] border-b border-[var(--colors\/border\/border-secondary,#e9eaeb)] border-solid px-[var(--spacing-3xl,24px)] py-[var(--spacing-xl,16px)] text-left outline-none focus-visible:ring-2 focus-visible:ring-[#ff7404] focus-visible:ring-offset-2 focus-visible:ring-offset-white ${ROW_STRIPE_BG[i % 2]} hover:brightness-[0.99]`}
+                className={`relative ${ROW_Z[i]} flex h-[72px] w-full shrink-0 cursor-pointer content-stretch items-center gap-[var(--spacing-lg,12px)] border-b border-[var(--colors\/border\/border-secondary,#e9eaeb)] border-solid px-[var(--spacing-3xl,24px)] py-[var(--spacing-lg,12px)] text-left outline-none focus-visible:ring-2 focus-visible:ring-[#ff7404] focus-visible:ring-offset-2 focus-visible:ring-offset-white ${ROW_STRIPE_BG[i % 2]} hover:brightness-[0.99]`}
                 data-name="Table cell"
               >
                 <div className="relative size-[40px] shrink-0 overflow-clip rounded-[var(--radius-full,9999px)] border border-[var(--colors\/border\/border-secondary,#e9eaeb)] border-solid bg-[var(--colors\/background\/bg-tertiary,#f5f5f5)]">
@@ -298,7 +298,7 @@ export function LatestTracesTable({ onOpenTrace }: { onOpenTrace: (trace: TraceR
                 type="button"
                 tabIndex={-1}
                 onClick={() => onOpenTrace(row)}
-                className={`relative ${ROW_Z[i]} flex h-[72px] w-full shrink-0 cursor-pointer content-stretch items-center border-b border-[var(--colors\/border\/border-secondary,#e9eaeb)] border-solid px-[var(--spacing-3xl,24px)] py-[var(--spacing-xl,16px)] outline-none ${ROW_STRIPE_BG[i % 2]} hover:brightness-[0.99]`}
+                className={`relative ${ROW_Z[i]} flex h-[72px] w-full shrink-0 cursor-pointer content-stretch items-center border-b border-[var(--colors\/border\/border-secondary,#e9eaeb)] border-solid px-[var(--spacing-3xl,24px)] py-[var(--spacing-lg,12px)] outline-none ${ROW_STRIPE_BG[i % 2]} hover:brightness-[0.99]`}
                 data-name="Table cell"
               >
                 {row.typeLabel === 'ide' ? <IdeTypeBadge /> : <FrameworkTypeBadge />}
@@ -331,7 +331,7 @@ export function LatestTracesTable({ onOpenTrace }: { onOpenTrace: (trace: TraceR
                 type="button"
                 tabIndex={-1}
                 onClick={() => onOpenTrace(row)}
-                className={`relative ${ROW_Z[i]} flex h-[72px] w-full shrink-0 cursor-pointer content-stretch items-center border-b border-[var(--colors\/border\/border-secondary,#e9eaeb)] border-solid px-[var(--spacing-3xl,24px)] py-[var(--spacing-xl,16px)] outline-none ${ROW_STRIPE_BG[i % 2]} hover:brightness-[0.99]`}
+                className={`relative ${ROW_Z[i]} flex h-[72px] w-full shrink-0 cursor-pointer content-stretch items-center border-b border-[var(--colors\/border\/border-secondary,#e9eaeb)] border-solid px-[var(--spacing-3xl,24px)] py-[var(--spacing-lg,12px)] outline-none ${ROW_STRIPE_BG[i % 2]} hover:brightness-[0.99]`}
                 data-name="Table cell"
               >
                 <div className="relative shrink-0 content-stretch flex items-center rounded-[var(--radius-sm,6px)] border border-[var(--component-colors\/utility\/gray\/utility-gray-200,#e9eaeb)] border-solid bg-[var(--component-colors\/utility\/gray\/utility-gray-50,#fafafa)] px-[var(--spacing-sm,6px)] py-[var(--spacing-xxs,2px)]">
@@ -368,7 +368,7 @@ export function LatestTracesTable({ onOpenTrace }: { onOpenTrace: (trace: TraceR
                 type="button"
                 tabIndex={-1}
                 onClick={() => onOpenTrace(row)}
-                className={`relative ${ROW_Z[i]} flex h-[72px] w-full shrink-0 cursor-pointer content-stretch items-center border-b border-[var(--colors\/border\/border-secondary,#e9eaeb)] border-solid px-[var(--spacing-3xl,24px)] py-[var(--spacing-xl,16px)] outline-none ${ROW_STRIPE_BG[i % 2]} hover:brightness-[0.99]`}
+                className={`relative ${ROW_Z[i]} flex h-[72px] w-full shrink-0 cursor-pointer content-stretch items-center border-b border-[var(--colors\/border\/border-secondary,#e9eaeb)] border-solid px-[var(--spacing-3xl,24px)] py-[var(--spacing-lg,12px)] outline-none ${ROW_STRIPE_BG[i % 2]} hover:brightness-[0.99]`}
                 data-name="Table cell"
               >
                 <div className="relative shrink-0 content-stretch flex items-center rounded-[var(--radius-sm,6px)] border border-[var(--component-colors\/utility\/error\/utility-error-200,#fecdca)] border-solid bg-[var(--component-colors\/utility\/error\/utility-error-50,#fef3f2)] px-[var(--spacing-sm,6px)] py-[var(--spacing-xxs,2px)]">
@@ -405,7 +405,7 @@ export function LatestTracesTable({ onOpenTrace }: { onOpenTrace: (trace: TraceR
                 type="button"
                 tabIndex={-1}
                 onClick={() => onOpenTrace(row)}
-                className={`relative ${ROW_Z[i]} flex h-[72px] w-full shrink-0 cursor-pointer content-stretch items-center border-b border-[var(--colors\/border\/border-secondary,#e9eaeb)] border-solid px-[var(--spacing-3xl,24px)] py-[var(--spacing-xl,16px)] outline-none ${ROW_STRIPE_BG[i % 2]} hover:brightness-[0.99]`}
+                className={`relative ${ROW_Z[i]} flex h-[72px] w-full shrink-0 cursor-pointer content-stretch items-center border-b border-[var(--colors\/border\/border-secondary,#e9eaeb)] border-solid px-[var(--spacing-3xl,24px)] py-[var(--spacing-lg,12px)] outline-none ${ROW_STRIPE_BG[i % 2]} hover:brightness-[0.99]`}
                 data-name="Table cell"
               >
                 <div className="relative shrink-0 content-stretch flex items-center rounded-[var(--radius-sm,6px)] border border-[var(--component-colors\/utility\/success\/utility-success-200,#abefc6)] border-solid bg-[var(--component-colors\/utility\/success\/utility-success-50,#ecfdf3)] px-[var(--spacing-sm,6px)] py-[var(--spacing-xxs,2px)]">
@@ -442,7 +442,7 @@ export function LatestTracesTable({ onOpenTrace }: { onOpenTrace: (trace: TraceR
                 type="button"
                 tabIndex={-1}
                 onClick={() => onOpenTrace(row)}
-                className={`relative ${ROW_Z[i]} flex h-[72px] w-full shrink-0 cursor-pointer content-stretch items-center border-b border-[var(--colors\/border\/border-secondary,#e9eaeb)] border-solid px-[var(--spacing-3xl,24px)] py-[var(--spacing-xl,16px)] outline-none ${ROW_STRIPE_BG[i % 2]} hover:brightness-[0.99]`}
+                className={`relative ${ROW_Z[i]} flex h-[72px] w-full shrink-0 cursor-pointer content-stretch items-center border-b border-[var(--colors\/border\/border-secondary,#e9eaeb)] border-solid px-[var(--spacing-3xl,24px)] py-[var(--spacing-lg,12px)] outline-none ${ROW_STRIPE_BG[i % 2]} hover:brightness-[0.99]`}
                 data-name="Table cell"
               >
                 <div className="relative shrink-0 content-stretch flex items-center gap-[8px]">
@@ -472,7 +472,7 @@ export function LatestTracesTable({ onOpenTrace }: { onOpenTrace: (trace: TraceR
                 type="button"
                 tabIndex={-1}
                 onClick={() => onOpenTrace(row)}
-                className={`relative ${ROW_Z[i]} flex h-[72px] w-full shrink-0 cursor-pointer content-stretch items-center border-b border-[var(--colors\/border\/border-secondary,#e9eaeb)] border-solid px-[var(--spacing-3xl,24px)] py-[var(--spacing-xl,16px)] outline-none ${ROW_STRIPE_BG[i % 2]} hover:brightness-[0.99]`}
+                className={`relative ${ROW_Z[i]} flex h-[72px] w-full shrink-0 cursor-pointer content-stretch items-center border-b border-[var(--colors\/border\/border-secondary,#e9eaeb)] border-solid px-[var(--spacing-3xl,24px)] py-[var(--spacing-lg,12px)] outline-none ${ROW_STRIPE_BG[i % 2]} hover:brightness-[0.99]`}
                 data-name="Table cell"
               >
                 <div className="relative shrink-0 content-stretch flex items-center gap-[8px]">
