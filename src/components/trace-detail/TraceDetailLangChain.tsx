@@ -1,5 +1,13 @@
+import { useEffect, useState } from 'react';
+
 import type { TraceRowContext } from '../../traceContext';
 import { ClaudeSummaryBanner, SheetTypeBadge } from './TraceDetailClaude';
+import {
+  TraceDetailSpanPanels,
+  TraceSheetTabBar,
+  TraceSheetV2ToolbarRow,
+  type TraceSheetTab,
+} from './traceDetailSheetDynamics';
 
 const imgIcon = "https://www.figma.com/api/mcp/asset/6c6eaad2-7777-4966-a336-511627d51bee";
 const imgIcon1 = "https://www.figma.com/api/mcp/asset/853a6275-6fe9-44fd-8dc7-62bf1c8b437d";
@@ -9,11 +17,21 @@ const imgDot1 = "https://www.figma.com/api/mcp/asset/0d3f79aa-f0ce-4a32-9e85-657
 const imgDot2 = "https://www.figma.com/api/mcp/asset/6674a568-1b7d-42ba-8fa1-f8647b4cc78a";
 
 export function TraceDetailLangChain({ trace, onClose }: { trace: TraceRowContext; onClose?: () => void }) {
+  const [timelineExpanded, setTimelineExpanded] = useState(false);
+  const [sheetTab, setSheetTab] = useState<TraceSheetTab>('v1');
+  const [v2Search, setV2Search] = useState('');
+
+  useEffect(() => {
+    setSheetTab('v1');
+    setV2Search('');
+    setTimelineExpanded(false);
+  }, [trace.id]);
+
   return (
     <div className="bg-[var(--colors\/background\/bg-primary,white)] border border-[var(--colors\/border\/border-primary,#d5d7da)] border-solid content-stretch flex flex-col items-start overflow-clip pb-[16px] relative rounded-tl-[16px] rounded-tr-[16px] size-full" data-name="sidesheet" data-node-id="1467:190062">
       <div className="bg-[var(--colors\/background\/bg-secondary_subtle,#fdfdfd)] border-[var(--colors\/border\/border-primary,#d5d7da)] border-b border-solid content-stretch flex gap-[12px] items-center px-[24px] py-[12px] relative shrink-0 w-full" data-name="Table header cell" data-node-id="1467:190063">
-        <div className="content-stretch flex flex-[1_0_0] gap-[16px] items-center min-h-px min-w-px relative" data-name="Header Container" data-node-id="1467:190064">
-          <div className="content-stretch flex gap-[12px] items-center relative shrink-0" data-name="Title Container" data-node-id="1467:190065">
+        <div className="content-stretch flex min-h-px min-w-0 flex-[1_0_0] items-center gap-3 relative" data-name="Header Container" data-node-id="1467:190064">
+          <div className="content-stretch flex shrink-0 gap-[12px] items-center relative" data-name="Title Container" data-node-id="1467:190065">
             <div className="overflow-clip relative shrink-0 size-[24px]" data-name="fingerprint-01" data-node-id="1467:190066">
               <div className="absolute inset-[8.33%_8.33%_9.65%_8.33%]" data-name="Icon" data-node-id="I1467:190066;3463:404025">
                 <div className="absolute inset-[-5.08%_-5%]">
@@ -27,6 +45,7 @@ export function TraceDetailLangChain({ trace, onClose }: { trace: TraceRowContex
               </p>
             </div>
           </div>
+          <TraceSheetTabBar sheetTab={sheetTab} onTabChange={setSheetTab} />
         </div>
         <button
           type="button"
@@ -47,8 +66,16 @@ export function TraceDetailLangChain({ trace, onClose }: { trace: TraceRowContex
         </button>
       </div>
       <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px min-w-px overflow-x-clip overflow-y-auto relative rounded-[12px] w-full" data-node-id="1467:190072">
+        <TraceSheetV2ToolbarRow
+          visible={sheetTab === 'v2'}
+          v2Search={v2Search}
+          onV2SearchChange={setV2Search}
+        />
         <div className="content-stretch flex flex-col gap-[11px] items-start relative shrink-0 w-full" data-node-id="1525:184762">
-          <div className="content-start flex flex-wrap items-start p-[12px] relative shrink-0 w-full" data-node-id="1467:190073">
+          <div
+            className={`content-start flex flex-wrap items-start px-[12px] relative shrink-0 w-full ${sheetTab === 'v1' ? 'pt-[12px]' : 'pt-0'}`}
+            data-node-id="1467:190073"
+          >
             <div className="content-stretch flex flex-[1_0_0] flex-col gap-[12px] items-start min-h-px min-w-px relative" data-node-id="1490:192899">
               <div className="border-2 border-[var(--colors\/brand-old\/900-orange,#ff7404)] border-solid content-stretch flex flex-col items-start overflow-clip relative rounded-[12px] shrink-0 w-full" data-node-id="1467:190074">
                 <div className="content-stretch flex items-center relative shrink-0 w-full" data-node-id="1467:190075">
@@ -178,147 +205,13 @@ export function TraceDetailLangChain({ trace, onClose }: { trace: TraceRowContex
               <ClaudeSummaryBanner trace={trace} />
             </div>
           </div>
-          <div className="content-stretch flex flex-col gap-[11px] items-center px-[12px] relative shrink-0 w-full" data-node-id="1525:184787">
-            <div className="content-stretch flex flex-col h-[189px] items-start px-[12px] relative shrink-0 w-full" data-node-id="1490:192986">
-              <div className="content-stretch flex flex-col gap-[12px] h-[125px] items-start relative shrink-0 w-[665px]" data-name="Container" data-node-id="1490:192931">
-                <div className="h-[20px] relative shrink-0 w-full" data-name="SpanRow" data-node-id="1490:192932">
-                  <div className="absolute content-stretch flex items-start left-px pr-[6px] top-[5.25px] w-[58px]" data-name="Container" data-node-id="1490:192933">
-                    <p className="font-[family-name:var(--font-family\/font-family-body,'Inter:Semibold',sans-serif)] font-[var(--font-weight\/semibold,normal)] leading-[var(--line-height\/text-xs,18px)] relative shrink-0 text-[color:var(--Colors/Text/text-primary(900),#181d27)] text-[length:var(--font-size\/text-xs,12px)] text-right w-[52px]" data-node-id="1490:192934">
-                      3200ms
-                    </p>
-                  </div>
-                  <div className="absolute bg-[#7b8ef8] content-stretch flex h-[20px] items-center left-[78px] opacity-75 overflow-clip pl-[4px] rounded-[3px] top-0 w-[591px]" data-name="Container" data-node-id="1490:192935">
-                    <div className="opacity-90 relative shrink-0 w-[81.883px]" data-name="Text" data-node-id="1490:192936">
-                      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-start relative w-full">
-                        <p className="font-[family-name:var(--font-family\/font-family-body,'Inter:Semibold',sans-serif)] font-[var(--font-weight\/semibold,normal)] leading-[var(--line-height\/text-xs,18px)] relative shrink-0 text-[length:var(--font-size\/text-xs,12px)] text-white whitespace-nowrap" data-node-id="1490:192937">
-                          RetrievalQA Chain
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="h-[20px] relative shrink-0 w-full" data-name="SpanRow" data-node-id="1490:192938">
-                  <div className="absolute content-stretch flex items-start left-px pr-[6px] top-[5.25px] w-[58px]" data-name="Container" data-node-id="1490:192939">
-                    <p className="font-[family-name:var(--font-family\/font-family-body,'Inter:Semibold',sans-serif)] font-[var(--font-weight\/semibold,normal)] leading-[var(--line-height\/text-xs,18px)] relative shrink-0 text-[color:var(--Colors/Text/text-primary(900),#181d27)] text-[length:var(--font-size\/text-xs,12px)] text-right w-[52px]" data-node-id="1490:192940">
-                      600ms
-                    </p>
-                  </div>
-                  <div className="absolute h-[20px] left-[96px] top-0 w-[569px]" data-name="Container" data-node-id="1490:192941">
-                    <div className="absolute bg-[#38bdf8] content-stretch flex h-[20px] items-center left-[8.89px] opacity-75 overflow-clip pl-[4px] rounded-[3px] shadow-[0px_0px_0px_1.5px_#34d399] top-0" data-name="Container" data-node-id="1490:192942">
-                      <div className="opacity-90 relative shrink-0 w-[317.883px]" data-name="Text" data-node-id="1490:192943">
-                        <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-start relative w-full">
-                          <p className="font-[family-name:var(--font-family\/font-family-body,'Inter:Semibold',sans-serif)] font-[var(--font-weight\/semibold,normal)] leading-[var(--line-height\/text-xs,18px)] relative shrink-0 text-[length:var(--font-size\/text-xs,12px)] text-white whitespace-nowrap" data-node-id="1490:192944">
-                            on_llm_start → claude-sonnet-4 (query rewrite) (0.3k→0.2k) $0.0012
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="h-[20px] relative shrink-0 w-full" data-name="SpanRow" data-node-id="1490:192945">
-                  <p className="-translate-x-full absolute font-[family-name:var(--font-family\/font-family-body,'Inter:Semibold',sans-serif)] font-[var(--font-weight\/semibold,normal)] leading-[var(--line-height\/text-xs,18px)] left-[53px] text-[color:var(--Colors/Text/text-primary(900),#181d27)] text-[length:var(--font-size\/text-xs,12px)] text-right top-[5.25px] w-[41px]" data-node-id="1490:192946">
-                    320ms
-                  </p>
-                  <div className="absolute bg-[#fb923c] content-stretch flex h-[20px] items-center left-[216.91px] opacity-75 overflow-clip pl-[4px] rounded-[3px] top-0" data-name="Container" data-node-id="1490:192947">
-                    <div className="opacity-90 relative shrink-0 w-[134.859px]" data-name="Text" data-node-id="1490:192948">
-                      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-start relative w-full">
-                        <p className="font-[family-name:var(--font-family\/font-family-body,'Inter:Semibold',sans-serif)] font-[var(--font-weight\/semibold,normal)] leading-[var(--line-height\/text-xs,18px)] relative shrink-0 text-[length:var(--font-size\/text-xs,12px)] text-white whitespace-nowrap" data-node-id="1490:192949">
-                          Pinecone retriever (top_k=4)
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="h-[20px] relative shrink-0 w-full" data-name="SpanRow" data-node-id="1490:192950">
-                  <div className="absolute content-stretch flex items-start left-px pr-[6px] top-[5.25px] w-[58px]" data-name="Container" data-node-id="1490:192951">
-                    <p className="font-[family-name:var(--font-family\/font-family-body,'Inter:Semibold',sans-serif)] font-[var(--font-weight\/semibold,normal)] leading-[var(--line-height\/text-xs,18px)] relative shrink-0 text-[color:var(--Colors/Text/text-primary(900),#181d27)] text-[length:var(--font-size\/text-xs,12px)] text-right w-[52px]" data-node-id="1490:192952">
-                      1800ms
-                    </p>
-                  </div>
-                  <div className="absolute h-[20px] left-[96px] top-0 w-[569px]" data-name="Container" data-node-id="1490:192953">
-                    <div className="absolute bg-[#38bdf8] content-stretch flex h-[20px] items-center left-[156.7px] opacity-75 overflow-clip pl-[4px] rounded-[3px] shadow-[0px_0px_0px_1.5px_#34d399] top-0 w-[324.063px]" data-name="Container" data-node-id="1490:192954">
-                      <div className="opacity-90 relative shrink-0 w-[298.617px]" data-name="Text" data-node-id="1490:192955">
-                        <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-start relative w-full">
-                          <p className="font-[family-name:var(--font-family\/font-family-body,'Inter:Semibold',sans-serif)] font-[var(--font-weight\/semibold,normal)] leading-[var(--line-height\/text-xs,18px)] relative shrink-0 text-[length:var(--font-size\/text-xs,12px)] text-white whitespace-nowrap" data-node-id="1490:192956">
-                            on_llm_start → claude-sonnet-4 (synthesis) (4.8k→0.9k) $0.0098
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="absolute content-stretch flex gap-[4px] items-center left-[483px] top-[-0.5px] w-[94px]" data-node-id="1490:192957">
-                      <div className="bg-[var(--component-colors\/utility\/success\/utility-success-50,#ecfdf3)] border border-[var(--component-colors\/utility\/success\/utility-success-200,#abefc6)] border-solid content-stretch flex gap-[var(--spacing-xs,4px)] items-center pl-[var(--spacing-sm,6px)] pr-[var(--spacing-md,8px)] py-[var(--spacing-xxs,2px)] relative rounded-[var(--radius-full,9999px)] shrink-0" data-name="Badge" data-node-id="1490:192958">
-                        <div className="relative shrink-0 size-[8px]" data-name="_Dot" data-node-id="I1490:192958;3918:412868">
-                          <div className="absolute left-px size-[6px] top-px" data-name="Dot" data-node-id="I1490:192958;3918:412868;1046:12312">
-                            <img alt="" className="absolute block max-w-none size-full" src={imgDot1} />
-                          </div>
-                        </div>
-                        <p className="font-[family-name:var(--font-family\/font-family-body,'Inter:Medium',sans-serif)] font-[var(--font-weight\/medium,normal)] font-medium leading-[var(--line-height\/text-xs,18px)] relative shrink-0 text-[color:var(--component-colors\/utility\/success\/utility-success-700,#067647)] text-[length:var(--font-size\/text-xs,12px)] text-center whitespace-nowrap" data-node-id="I1490:192958;3918:412869">
-                          Pass
-                        </p>
-                      </div>
-                      <div className="bg-[var(--component-colors\/utility\/success\/utility-success-50,#ecfdf3)] border border-[var(--component-colors\/utility\/success\/utility-success-200,#abefc6)] border-solid content-stretch flex items-center px-[var(--spacing-md,8px)] py-[var(--spacing-xxs,2px)] relative rounded-[var(--radius-full,9999px)] shrink-0" data-name="Badge" data-node-id="1490:192959">
-                        <p className="font-[family-name:var(--font-family\/font-family-body,'Inter:Medium',sans-serif)] font-[var(--font-weight\/medium,normal)] font-medium leading-[var(--line-height\/text-xs,18px)] relative shrink-0 text-[color:var(--component-colors\/utility\/success\/utility-success-700,#067647)] text-[length:var(--font-size\/text-xs,12px)] text-center whitespace-nowrap" data-node-id="I1490:192959;3918:415771">
-                          0.03
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="h-[20px] relative shrink-0 w-full" data-name="SpanRow" data-node-id="1490:192960">
-                  <div className="absolute content-stretch flex items-start left-px pr-[6px] top-[5.25px] w-[58px]" data-name="Container" data-node-id="1490:192961">
-                    <p className="font-[family-name:var(--font-family\/font-family-body,'Inter:Semibold',sans-serif)] font-[var(--font-weight\/semibold,normal)] leading-[var(--line-height\/text-xs,18px)] relative shrink-0 text-[color:var(--Colors/Text/text-primary(900),#181d27)] text-[length:var(--font-size\/text-xs,12px)] text-right w-[52px]" data-node-id="1490:192962">
-                      80ms
-                    </p>
-                  </div>
-                  <div className="absolute bg-[#fbbf24] content-stretch flex h-[20px] items-center left-[591.66px] opacity-75 overflow-clip pl-[4px] rounded-[3px] top-[2px]" data-name="Container" data-node-id="1490:192963">
-                    <div className="opacity-90 relative shrink-0 w-[72.25px]" data-name="Text" data-node-id="1490:192964">
-                      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-start relative w-full">
-                        <p className="font-[family-name:var(--font-family\/font-family-body,'Inter:Semibold',sans-serif)] font-[var(--font-weight\/semibold,normal)] leading-[var(--line-height\/text-xs,18px)] relative shrink-0 text-[length:var(--font-size\/text-xs,12px)] text-white whitespace-nowrap" data-node-id="1490:192965">
-                          format_response
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="h-[20px] relative shrink-0 w-full" data-name="SpanRow" data-node-id="1490:192966">
-                  <div className="absolute content-stretch flex items-start left-px pr-[6px] top-[5.25px] w-[58px]" data-name="Container" data-node-id="1490:192967">
-                    <p className="font-[family-name:var(--font-family\/font-family-body,'Inter:Semibold',sans-serif)] font-[var(--font-weight\/semibold,normal)] leading-[var(--line-height\/text-xs,18px)] relative shrink-0 text-[color:var(--Colors/Text/text-primary(900),#181d27)] text-[length:var(--font-size\/text-xs,12px)] text-right w-[52px]" data-node-id="1490:192968">
-                      50ms
-                    </p>
-                  </div>
-                  <div className="absolute h-[20px] left-[78px] top-0 w-[587px]" data-name="Container" data-node-id="1490:192969">
-                    <div className="absolute bg-[#7b8ef8] content-stretch flex h-[20px] items-center left-[379.48px] opacity-75 overflow-clip pl-[4px] rounded-[3px] shadow-[0px_0px_0px_1.5px_#34d399] top-[4px]" data-name="Container" data-node-id="1490:192970">
-                      <div className="opacity-90 relative shrink-0 w-[110.781px]" data-name="Text" data-node-id="1490:192971">
-                        <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-start relative w-full">
-                          <p className="font-[family-name:var(--font-family\/font-family-body,'Inter:Semibold',sans-serif)] font-[var(--font-weight\/semibold,normal)] leading-[var(--line-height\/text-xs,18px)] relative shrink-0 text-[length:var(--font-size\/text-xs,12px)] text-white whitespace-nowrap" data-node-id="1490:192972">
-                            Chain Complete → 200 OK
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="absolute h-[23.5px] left-[540.04px] top-[2px] w-[46.961px]" data-name="Container" data-node-id="1490:192973" />
-                    <div className="absolute content-stretch flex gap-[4px] items-center left-[499.04px] top-[1.75px] w-[94px]" data-node-id="1490:192974">
-                      <div className="bg-[var(--component-colors\/utility\/success\/utility-success-50,#ecfdf3)] border border-[var(--component-colors\/utility\/success\/utility-success-200,#abefc6)] border-solid content-stretch flex gap-[var(--spacing-xs,4px)] items-center pl-[var(--spacing-sm,6px)] pr-[var(--spacing-md,8px)] py-[var(--spacing-xxs,2px)] relative rounded-[var(--radius-full,9999px)] shrink-0" data-name="Badge" data-node-id="1490:192975">
-                        <div className="relative shrink-0 size-[8px]" data-name="_Dot" data-node-id="I1490:192975;3918:412868">
-                          <div className="absolute left-px size-[6px] top-px" data-name="Dot" data-node-id="I1490:192975;3918:412868;1046:12312">
-                            <img alt="" className="absolute block max-w-none size-full" src={imgDot1} />
-                          </div>
-                        </div>
-                        <p className="font-[family-name:var(--font-family\/font-family-body,'Inter:Medium',sans-serif)] font-[var(--font-weight\/medium,normal)] font-medium leading-[var(--line-height\/text-xs,18px)] relative shrink-0 text-[color:var(--component-colors\/utility\/success\/utility-success-700,#067647)] text-[length:var(--font-size\/text-xs,12px)] text-center whitespace-nowrap" data-node-id="I1490:192975;3918:412869">
-                          Pass
-                        </p>
-                      </div>
-                      <div className="bg-[var(--component-colors\/utility\/success\/utility-success-50,#ecfdf3)] border border-[var(--component-colors\/utility\/success\/utility-success-200,#abefc6)] border-solid content-stretch flex items-center px-[var(--spacing-md,8px)] py-[var(--spacing-xxs,2px)] relative rounded-[var(--radius-full,9999px)] shrink-0" data-name="Badge" data-node-id="1490:192976">
-                        <p className="font-[family-name:var(--font-family\/font-family-body,'Inter:Medium',sans-serif)] font-[var(--font-weight\/medium,normal)] font-medium leading-[var(--line-height\/text-xs,18px)] relative shrink-0 text-[color:var(--component-colors\/utility\/success\/utility-success-700,#067647)] text-[length:var(--font-size\/text-xs,12px)] text-center whitespace-nowrap" data-node-id="I1490:192976;3918:415771">
-                          0.03
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <TraceDetailSpanPanels
+            traceId={trace.id}
+            sheetTab={sheetTab}
+            v2Search={v2Search}
+            timelineExpanded={timelineExpanded}
+            onToggleTimelineExpanded={() => setTimelineExpanded((v) => !v)}
+          />
           <div className="bg-[var(--colors\/background\/bg-primary,white)] border border-[var(--colors\/border\/border-secondary,#e9eaeb)] border-solid content-stretch flex flex-col isolate items-start overflow-clip relative shadow-[0px_1px_2px_0px_var(--colors\/effects\/shadows\/shadow-xs,rgba(10,13,18,0.05))] shrink-0 w-full" data-name="Table" data-node-id="1467:190197">
             <div className="bg-[var(--colors\/background\/bg-primary,white)] content-stretch flex flex-col gap-[var(--spacing-lg,12px)] isolate items-start relative shrink-0 w-full z-[2]" data-name="Card header" data-node-id="1467:190198">
               <div className="content-stretch flex gap-[var(--spacing-xl,16px)] items-start pt-[var(--spacing-lg,12px)] px-[var(--spacing-3xl,24px)] relative shrink-0 w-full z-[2]" data-name="Content" data-node-id="I1467:190198;1211:74">
