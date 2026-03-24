@@ -190,7 +190,7 @@ export function MetricGroup() {
       data-node-id="1530:187583"
     >
       <MetricItemAnimatedNumber
-        title="Agent Sessions"
+        title="Agent IDE Sessions"
         rawValue={1247}
         format="compact"
         changeVariant="trend-up"

@@ -284,7 +284,7 @@ function AgentSessionsChart({
             height={vbH}
             className="min-w-full touch-pan-x"
             role="img"
-            aria-label="Agent sessions by bot and framework"
+            aria-label="Agent IDE sessions by bot and framework"
             onMouseLeave={() => setHover(null)}
           >
             {gridYs.map((gy, i) => (
@@ -484,7 +484,7 @@ export function DashboardChartsRow1() {
         className="animate-fade-in-up flex min-h-[340px] min-w-0 flex-1 flex-col overflow-hidden rounded-[8px] border border-[#d5d7da] bg-white pb-2 shadow-sm"
         style={{ animationDelay: '0.2s' }}
       >
-        <ChartHeader title="Agent sessions by workload" />
+        <ChartHeader title="Agent IDE sessions by workload" />
         <div className="flex min-h-0 min-w-0 flex-1 flex-col px-1 pt-1">
           <div className="flex min-h-0 min-w-0 flex-1 items-end gap-0 pr-2">
             <YAxisColumn yMax={agentYMax} />
