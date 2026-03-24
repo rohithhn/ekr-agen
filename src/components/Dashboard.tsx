@@ -22,7 +22,7 @@ export function Dashboard({ onOpenTrace }: { onOpenTrace: (trace: TraceRowContex
       <div className="flex min-h-0 min-w-0 flex-1">
         <SidebarNavigation />
         <main className="min-h-0 min-w-0 flex-1 overflow-y-auto bg-[#fafafa] p-2">
-          <div className="flex min-h-full flex-col rounded-lg border border-[#d5d7da] bg-[#fafafa]">
+          <div className="flex min-h-full flex-col overflow-hidden rounded-xl border border-[#d5d7da] bg-[#fafafa]">
             <DashboardPageHeader />
             <div className="flex flex-col gap-3 p-3">
               <MetricGroup />

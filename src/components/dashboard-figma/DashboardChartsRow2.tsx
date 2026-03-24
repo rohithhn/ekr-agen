@@ -6,6 +6,12 @@ function jitter(base: number, range: number, min: number, max: number) {
   return Math.max(min, Math.min(max, +(base + (Math.random() - 0.5) * range).toFixed(1)))
 }
 
+function niceYMax(values: number[], step = 4) {
+  const raw = Math.max(...values, 0)
+  const withHeadroom = raw <= 0 ? step : raw * 1.12
+  return Math.max(step, Math.ceil(withHeadroom / step) * step)
+}
+
 function ChartHeader({ title }: { title: string }) {
   return (
     <div className="flex h-[34px] w-full shrink-0 items-center overflow-clip rounded-tl-[12px] rounded-tr-[12px] bg-[#fafafa] px-3">
@@ -270,13 +276,13 @@ function LineChartSvg({
 
       {hover !== null && (() => {
         const vals = hover.series === 'a' ? seriesA : seriesB
-        const seriesName = hover.series === 'a' ? 'Blocks' : 'Warnings'
+        const seriesName = hover.series === 'a' ? 'Hard blocks (policy)' : 'Soft warnings (logged)'
         return (
           <div
             className="pointer-events-none absolute z-20 -translate-x-1/2 -translate-y-full rounded-md border border-[#d5d7da] bg-white px-2.5 py-1.5 text-xs shadow-lg transition-all duration-150"
             style={{ left: tooltipPos.left, top: tooltipPos.top - 10 }}
           >
-            <p className="font-semibold text-[#181d27]">{vals[hover.idx]}</p>
+            <p className="font-semibold tabular-nums text-[#181d27]">{vals[hover.idx]}</p>
             <p className="text-[#717680]">{seriesName}</p>
           </div>
         )
@@ -294,8 +300,8 @@ function LineChartCard({
   blocks: number[]
   warnings: number[]
 }) {
-  const xLabels = ['2', '6', '10', '14', '18', '22', '26', '30']
-  const yMax = 28
+  const xLabels = ['Mar 3', 'Mar 6', 'Mar 9', 'Mar 12', 'Mar 15', 'Mar 18', 'Mar 21', 'Mar 23']
+  const yMax = niceYMax([...blocks, ...warnings], 4)
   const colorBlocks = '#b42318'
   const colorWarnings = '#175cd3'
 
@@ -304,8 +310,8 @@ function LineChartCard({
       <ChartHeader title={title} />
       <div className="flex flex-1 flex-col gap-1 px-1 pb-1">
         <Legend items={[
-          { name: 'Blocks', color: colorBlocks },
-          { name: 'Warnings', color: colorWarnings },
+          { name: 'Hard blocks', color: colorBlocks },
+          { name: 'Soft warnings', color: colorWarnings },
         ]} />
         <div className="relative flex-1 min-h-[180px] py-1 pr-2 pl-0.5">
           <LineChartSvg
@@ -323,17 +329,18 @@ function LineChartCard({
 }
 
 export function DashboardChartsRow2() {
-  const [monthBlocks, setMonthBlocks] = useState([5, 9, 7, 12, 10, 16, 14, 19])
-  const [monthWarnings, setMonthWarnings] = useState([3, 6, 5, 9, 8, 11, 10, 13])
-  const [actionsBlocks, setActionsBlocks] = useState([8, 11, 9, 15, 13, 18, 16, 21])
-  const [actionsWarnings, setActionsWarnings] = useState([4, 7, 6, 10, 9, 12, 11, 14])
+  const [monthBlocks, setMonthBlocks] = useState([12, 18, 15, 22, 19, 24, 21, 27])
+  const [monthWarnings, setMonthWarnings] = useState([8, 11, 14, 17, 15, 19, 18, 22])
+  const [actionsBlocks, setActionsBlocks] = useState([6, 9, 8, 13, 11, 16, 14, 18])
+  const [actionsWarnings, setActionsWarnings] = useState([14, 19, 17, 23, 21, 26, 24, 29])
 
   const tick = useCallback(() => {
-    const j = (arr: number[]) => arr.map((v) => jitter(v, 3, 1, 26))
-    setMonthBlocks(j)
-    setMonthWarnings(j)
-    setActionsBlocks(j)
-    setActionsWarnings(j)
+    const jb = (arr: number[]) => arr.map((v) => Math.round(jitter(v, 4, 4, 32)))
+    const jw = (arr: number[]) => arr.map((v) => Math.round(jitter(v, 5, 6, 36)))
+    setMonthBlocks(jb)
+    setMonthWarnings(jw)
+    setActionsBlocks(jb)
+    setActionsWarnings(jw)
   }, [])
 
   useEffect(() => {
@@ -344,10 +351,14 @@ export function DashboardChartsRow2() {
   return (
     <div className="flex w-full flex-col items-stretch gap-3 min-[1100px]:flex-row">
       <div className="animate-fade-in-up flex-1" style={{ animationDelay: '0.3s' }}>
-        <LineChartCard title="Guardrail Events / Month" blocks={monthBlocks} warnings={monthWarnings} />
+        <LineChartCard title="Guardrail outcomes (rolling 30d)" blocks={monthBlocks} warnings={monthWarnings} />
       </div>
       <div className="animate-fade-in-up flex-1" style={{ animationDelay: '0.4s' }}>
-        <LineChartCard title="Actions/Guardrail Events" blocks={actionsBlocks} warnings={actionsWarnings} />
+        <LineChartCard
+          title="Tool / LLM calls vs guardrail signals"
+          blocks={actionsBlocks}
+          warnings={actionsWarnings}
+        />
       </div>
     </div>
   )

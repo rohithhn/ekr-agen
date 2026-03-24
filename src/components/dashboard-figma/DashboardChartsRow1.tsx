@@ -250,8 +250,6 @@ function AgentSessionsChart({
   const plotH = vbH - plotTop - padB
   const gap = n > 0 ? plotW / n : plotW
   const groupW = gap * 0.82
-  const innerGap = Math.min(3, groupW / Math.max(4 * m, 1))
-  const barW = m > 0 ? Math.max(3, (groupW - innerGap * (m - 1)) / m) : 0
 
   const gridYs = useMemo(
     () => Array.from({ length: 6 }, (_, i) => plotTop + (i / 5) * plotH),
@@ -309,21 +307,28 @@ function AgentSessionsChart({
             {botNames.map((bot, botIdx) => {
               const cx = padL + gap * botIdx + gap / 2
               const gLeft = cx - groupW / 2
+              const active = visibleSeries
+                .map((s, fwIdx) => ({ s, fwIdx, v: s.values[botIdx] ?? 0 }))
+                .filter((row) => row.v > 0)
+              const mActive = active.length
+              const innerGapLocal = Math.min(3, groupW / Math.max(4 * mActive, 1))
+              const barWLocal =
+                mActive > 0 ? Math.max(3, (groupW - innerGapLocal * (mActive - 1)) / mActive) : 0
+
               return (
                 <g key={bot}>
-                  {visibleSeries.map((s, fwIdx) => {
-                    const v = s.values[botIdx] ?? 0
+                  {active.map(({ s, fwIdx, v }, localIdx) => {
                     const h = (v / yMax) * plotH
-                    const x = gLeft + fwIdx * (barW + innerGap)
+                    const x = gLeft + localIdx * (barWLocal + innerGapLocal)
                     const y = plotTop + plotH - h
                     const isH = hover?.bot === botIdx && hover?.fw === fwIdx
                     const dim = hover !== null && !isH
                     return (
                       <g key={s.name}>
                         <rect
-                          x={gLeft + fwIdx * (barW + innerGap)}
+                          x={x}
                           y={plotTop}
-                          width={barW}
+                          width={barWLocal}
                           height={plotH}
                           fill="transparent"
                           className="cursor-pointer"
@@ -341,8 +346,8 @@ function AgentSessionsChart({
                         <rect
                           x={x}
                           y={y}
-                          width={barW}
-                          height={Math.max(h, v > 0 ? 1.5 : 0)}
+                          width={barWLocal}
+                          height={Math.max(h, 1.5)}
                           rx={3}
                           ry={3}
                           fill={s.color}
@@ -353,7 +358,7 @@ function AgentSessionsChart({
                           <rect
                             x={x - 0.5}
                             y={y - 0.5}
-                            width={barW + 1}
+                            width={barWLocal + 1}
                             height={h + 1}
                             rx={4}
                             fill="none"
@@ -391,7 +396,7 @@ function AgentSessionsChart({
           <ChartTooltip
             x={hover.px}
             y={hover.py}
-            title={`${(visibleSeries[hover.fw]?.values[hover.bot] ?? 0).toFixed(1)} sessions`}
+            title={`${(visibleSeries[hover.fw]?.values[hover.bot] ?? 0).toLocaleString()} sessions`}
             subtitle={`${botNames[hover.bot]} · ${visibleSeries[hover.fw]?.name ?? ''}`}
           />
         ) : null}
@@ -402,19 +407,21 @@ function AgentSessionsChart({
 
 /** Demo: extendable lists — charts scroll horizontally when there are many categories */
 const DEFAULT_IDE: IdeDatum[] = [
-  { label: 'Cursor', value: 15 },
-  { label: 'Antigravity', value: 15 },
-  { label: 'Kiro', value: 17 },
-  { label: 'Claude Code', value: 18 },
+  { label: 'Cursor', value: 184 },
+  { label: 'VS Code', value: 96 },
+  { label: 'Windsurf', value: 72 },
+  { label: 'Claude Code', value: 141 },
+  { label: 'Zed', value: 38 },
 ]
 
-const DEFAULT_BOTS = ['Marketing', 'Devops', 'Coding', 'Basic bot']
+const DEFAULT_BOTS = ['support-copilot', 'deploy-runner', 'code-reviewer', 'research-agent']
 
+/** Per workload (DEFAULT_BOTS order): zeros = framework not used — bars render only when count > 0 */
 const DEFAULT_AGENT_SERIES: AgentSeries[] = [
-  { name: 'LangGraph', color: '#175cd3', values: [2.5, 3.2, 4.1, 1.8] },
-  { name: 'Langchain', color: '#a78bfa', values: [3.0, 2.8, 5.2, 2.4] },
-  { name: 'CrewAI', color: '#64748b', values: [1.8, 4.0, 3.1, 3.6] },
-  { name: 'Openclaw', color: '#ff7404', values: [2.2, 2.5, 2.4, 2.0] },
+  { name: 'LangGraph', color: '#175cd3', values: [0, 46, 0, 24] },
+  { name: 'LangChain', color: '#a78bfa', values: [0, 0, 40, 32] },
+  { name: 'CrewAI', color: '#64748b', values: [0, 0, 0, 20] },
+  { name: 'OpenClaw', color: '#ff7404', values: [52, 0, 22, 0] },
 ]
 
 export function DashboardChartsRow1() {
@@ -435,11 +442,13 @@ export function DashboardChartsRow1() {
   }, [agentSeries, hiddenSeries])
 
   const tick = useCallback(() => {
-    setIdeData((prev) => prev.map((d) => ({ ...d, value: jitter(d.value, 2.2, 1, 22) })))
+    setIdeData((prev) => prev.map((d) => ({ ...d, value: Math.round(jitter(d.value, 14, 12, 220)) })))
     setAgentSeries((prev) =>
       prev.map((s) => ({
         ...s,
-        values: s.values.map((v) => jitter(v, 1.2, 0.3, 9)),
+        values: s.values.map((v) =>
+          v <= 0 ? 0 : Math.round(jitter(v, 5, 8, 62)),
+        ),
       })),
     )
   }, [])
@@ -464,7 +473,7 @@ export function DashboardChartsRow1() {
         className="animate-fade-in-up flex min-h-[340px] min-w-0 flex-1 flex-col overflow-hidden rounded-[8px] border border-[#d5d7da] bg-white pb-2 shadow-sm"
         style={{ animationDelay: '0.1s' }}
       >
-        <ChartHeader title="IDE Sessions" />
+        <ChartHeader title="IDE sessions (instrumented)" />
         <div className="flex min-h-0 min-w-0 flex-1 items-end gap-0 pr-3">
           <YAxisColumn yMax={ideYMax} />
           <IdeSessionsChart data={ideData} yMax={ideYMax} />
@@ -475,7 +484,7 @@ export function DashboardChartsRow1() {
         className="animate-fade-in-up flex min-h-[340px] min-w-0 flex-1 flex-col overflow-hidden rounded-[8px] border border-[#d5d7da] bg-white pb-2 shadow-sm"
         style={{ animationDelay: '0.2s' }}
       >
-        <ChartHeader title="Agent Sessions" />
+        <ChartHeader title="Agent sessions by workload" />
         <div className="flex min-h-0 min-w-0 flex-1 flex-col px-1 pt-1">
           <div className="flex min-h-0 min-w-0 flex-1 items-end gap-0 pr-2">
             <YAxisColumn yMax={agentYMax} />

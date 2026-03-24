@@ -42,10 +42,7 @@ type TimelineTooltipState = {
   kind: string
   x: number
   y: number
-}
-
-function formatKind(k: string) {
-  return k.replace(/_/g, ' ')
+  attrs?: { k: string; v: string }[]
 }
 
 function SpanTimelineTooltip({ tip }: { tip: TimelineTooltipState }) {
@@ -53,6 +50,7 @@ function SpanTimelineTooltip({ tip }: { tip: TimelineTooltipState }) {
   const maxW = 400
   const left = Math.min(tip.x + pad, typeof window !== 'undefined' ? window.innerWidth - maxW - pad : tip.x)
   const top = Math.min(tip.y + pad, typeof window !== 'undefined' ? window.innerHeight - 160 : tip.y)
+  const attrs = tip.attrs?.slice(0, 5) ?? []
 
   return (
     <div
@@ -61,21 +59,36 @@ function SpanTimelineTooltip({ tip }: { tip: TimelineTooltipState }) {
       style={{ left: Math.max(pad, left), top: Math.max(pad, top) }}
     >
       <p className="text-[10px] font-semibold uppercase tracking-wide text-[#a4a7ae]">
-        Row {tip.rowIndex} · {formatKind(tip.kind)}
+        Row {tip.rowIndex} · span <span className="font-mono normal-case text-[#535862]">{tip.spanId}</span>
       </p>
       <p className="mt-1 break-words text-sm font-semibold leading-snug text-[#181d27]">{tip.label}</p>
-      <dl className="mt-2 space-y-1 text-xs text-[#535862]">
+      <div className="mt-2 space-y-1 text-xs text-[#535862]">
         <div className="flex justify-between gap-4">
-          <dt className="shrink-0 text-[#717680]">Wall time</dt>
-          <dd className="text-right font-medium tabular-nums text-[#181d27]">
+          <span className="shrink-0 text-[#717680]">Wall time</span>
+          <span className="text-right font-medium tabular-nums text-[#181d27]">
             {formatAxisMs(tip.startMs)} → {formatAxisMs(tip.endMs)}
-          </dd>
+          </span>
         </div>
         <div className="flex justify-between gap-4">
-          <dt className="text-[#717680]">Duration</dt>
-          <dd className="text-right font-medium tabular-nums text-[#181d27]">{formatMs(tip.durationMs)}</dd>
+          <span className="text-[#717680]">Duration</span>
+          <span className="text-right font-medium tabular-nums text-[#181d27]">{formatMs(tip.durationMs)}</span>
         </div>
-      </dl>
+        {attrs.length > 0 && (
+          <div className="border-t border-[#e9eaeb] pt-2">
+            <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-[#a4a7ae]">Attributes (demo)</p>
+            {attrs.map(({ k, v }) => (
+              <div key={k} className="flex justify-between gap-3 border-t border-[#f5f5f5] py-1 first:border-t-0 first:pt-0">
+                <span className="shrink-0 max-w-[55%] truncate font-mono text-[10px] text-[#717680]" title={k}>
+                  {k}
+                </span>
+                <span className="min-w-0 truncate text-right font-mono text-[10px] font-medium text-[#181d27]" title={v}>
+                  {v}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
@@ -162,6 +175,7 @@ export function LiveSpanTimeline({
         kind: span.kind,
         x: clientX,
         y: clientY,
+        attrs: span.attrs,
       })
     },
     [],
@@ -177,10 +191,11 @@ export function LiveSpanTimeline({
         <div className="border-b border-[#e9eaeb] bg-[#fdfdfd] px-3 py-2">
           <p className="text-xs font-semibold text-[#181d27]">Span timeline (Gantt)</p>
           <p className="mt-0.5 text-[11px] leading-snug text-[#535862]">
-            <span className="font-medium text-[#414651]">Y-axis:</span> row index (operation order).{' '}
-            <span className="font-medium text-[#414651]">X-axis:</span> wall time from trace start — bar length is how long
-            each step ran. Showing {spans.length} spans (demo target {DEMO_TIMELINE_SPAN_TARGET}); list is virtualized for
-            performance.
+            <span className="font-medium text-[#414651]">Synthetic OTel-style trace</span> — names and attributes mimic GenAI /
+            agent conventions (not from a live collector).{' '}
+            <span className="font-medium text-[#414651]">Y-axis:</span> span order ·{' '}
+            <span className="font-medium text-[#414651]">X-axis:</span> wall time from trace start. {spans.length} spans
+            (target {DEMO_TIMELINE_SPAN_TARGET}), virtualized.
           </p>
         </div>
 
